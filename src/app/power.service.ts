@@ -1,17 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
+import {Power} from './power';
 import { Hero } from './hero';
 import { MessageService } from './message.service';
-import {Power} from './power'
-import { Heropower } from './heropower';
 
+//change heroesURL
 @Injectable({ providedIn: 'root' })
-export class HeroService {
+export class PowerService {
 
-  private heroesUrl = 'http://localhost:4000/hero';  // URL to web api
+  private heroesUrl = 'http://localhost:4000/power';  // URL to web api
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -21,101 +20,76 @@ export class HeroService {
     private http: HttpClient,
     private messageService: MessageService) { }
 
-  /** GET heroes from the server  */
-  getHeroes (): Observable<Hero[]> {
+  /** GET heroes from the server */
+  getHeroes (): Observable<Power[]> {
     return this.http.get<any>(this.heroesUrl)
       .pipe(
         tap(_ => this.log('fetched heroes')),
-        catchError(this.handleError<Hero[]>('getHeroes', []))
+        catchError(this.handleError<Power[]>('getHeroes', []))
       );
   }
-
+//channge heroes here
   /** GET hero by id. Return `undefined` when id not found */
-  getHeroNo404<Data>(id: number): Observable<Hero> {
+  getHeroNo404<Data>(id: number): Observable<Power> {
     const url = `${this.heroesUrl}/?id=${id}`;
-    return this.http.get<Hero[]>(url)
+    return this.http.get<Power[]>(url)
       .pipe(
         map(heroes => heroes[0]), // returns a {0|1} element array
         tap(h => {
           const outcome = h ? `fetched` : `did not find`;
           this.log(`${outcome} hero id=${id}`);
         }),
-        catchError(this.handleError<Hero>(`getHero id=${id}`))
+        catchError(this.handleError<Power>(`getHero id=${id}`))
       );
   }
 
   /** GET hero by id. Will 404 if id not found */
-  getHero(id: number): Observable<Hero> {
+  getHero(id: number): Observable<Power> {
     const url = `${this.heroesUrl}/${id}`;
-    return this.http.get<Hero>(url).pipe(
+    return this.http.get<Power>(url).pipe(
       tap(_ => this.log(`fetched hero id=${id}`)),
-      catchError(this.handleError<Hero>(`getHero id=${id}`))
+      catchError(this.handleError<Power>(`getHero id=${id}`))
     );
   }
-  
-/** GET power by id. Will 404 if id not found */
- getPower(id: number): Observable<Power> {
-  const url = `http://localhost:4000/hero/power/${id}`;
-  return this.http.get<Power>(url).pipe(
-    tap(_ => this.log(`fetched power id=${id}`)),
-    catchError(this.handleError<Power>(`getHero id=${id}`))
-  );
-}
-
-addPowerToHero(ob:Heropower): Observable<Power> {
-    
-    let hid=ob.hid;
-    let pid=ob.pid;
-    const url = `http://localhost:4000/heropower/`;
- 
-    return this.http.post<any>(url,{hid,pid},this.httpOptions).pipe(
-      tap(_ => this.log(`added power to hero id=${hid}`)),
-      catchError(this.handleError<any>(`addPowerToHero id=${hid}`))
-    );
-
-  
-}
-///add power
-     
 
   /* GET heroes whose name contains search term */
-  searchHeroes(term: string): Observable<Hero[]> {
+  searchHeroes(term: string): Observable<Power[]> {
     if (!term.trim()) {
       // if not search term, return empty hero array.
       return of([]);
     }
-    return this.http.get<Hero[]>(`${this.heroesUrl}/?name=${term}`).pipe(
+    return this.http.get<Power[]>(`${this.heroesUrl}/?name=${term}`).pipe(
       tap(_ => this.log(`found heroes matching "${term}"`)),
-      catchError(this.handleError<Hero[]>('searchHeroes', []))
+      catchError(this.handleError<Power[]>('searchHeroes', []))
     );
   }
 
   //////// Save methods //////////
 
-  /** POST: add a new hero to the ser ver */
-  addHero (hero: Hero): Observable<Hero> {
-    return this.http.post<Hero>(this.heroesUrl, hero, this.httpOptions).pipe(
-      tap((newHero: Hero) => this.log(`added hero w/ id=${hero.id}`)),
-      catchError(this.handleError<Hero>('addHero'))
+  /** POST: add a new hero to the server */
+  addHero (hero: Power): Observable<Power> {
+    return this.http.post<Power>(this.heroesUrl, hero, this.httpOptions).pipe(
+      tap((newHero: Power) => this.log(`added hero w/ id=${hero.id}`)),
+      catchError(this.handleError<Power>('addHero'))
     );
   }
 
   /** DELETE: delete the hero from the server */
-  deleteHero (hero: Hero | number): Observable<Hero> {
+  deleteHero (hero: Power | number): Observable<Power> {
     const id = typeof hero === 'number' ? hero : hero.id;
     const url = `${this.heroesUrl}/${id}`;
 
-    return this.http.delete<Hero>(url, this.httpOptions).pipe(
+    return this.http.delete<Power>(url, this.httpOptions).pipe(
       tap(_ => this.log(`deleted hero id=${id}`)),
-      catchError(this.handleError<Hero>('deleteHero'))
+      catchError(this.handleError<Power>('deleteHero'))
     );
   }
 
   /** PUT: update the hero on the server */
-  updateHero (hero: Hero): Observable<any> {
+  updateHero (hero: Power): Observable<any> {
     return this.http.put(`${this.heroesUrl}/${hero.id}`, hero, this.httpOptions).pipe(
       tap(_ => this.log(`updated hero id=${hero.id}`)),
-      catchError(this.handleError<Hero>('updateHero'))
+      catchError(this.handleError<Power>('updateHero'))
     );
   }
 
@@ -141,21 +115,7 @@ addPowerToHero(ob:Heropower): Observable<Power> {
 
   /** Log a HeroService message with the MessageService */
   private log(message: string) {
-    this.messageService.add(`HeroService: ${message}`);
+    this.messageService.add(`PowerService: ${message}`);
   }
-
-
-  //deleting power associated to hero
-
-  deletePower (hero: Hero | number): Observable<Hero> {
-    const id = typeof hero === 'number' ? hero: hero.id;
-    const url = `http://localhost:4000/heropower/${id}`;
-    return this.http.delete<Hero>(url, this.httpOptions).pipe(
-      tap(_ => this.log(`deleted heropower id=${id}`)),
-      catchError(this.handleError<Hero>('deleteHero'))
-    );
-  }//-> deleted by hid which deletes all the powers
-  //send {hid,pid}
-
-
 }
+

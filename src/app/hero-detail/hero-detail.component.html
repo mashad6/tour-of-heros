@@ -1,11 +1,38 @@
 <div *ngIf="hero">
-  <h2>{{hero.name | uppercase}} Details</h2>
+  <h2>{{hero.name | uppercase}} Details:</h2>
   <div><span>id: </span>{{hero.id}}</div>
   <div>
     <label>name:
       <input [(ngModel)]="hero.name" placeholder="name"/>
     </label>
   </div>
-  <button (click)="goBack()">go back</button>
-  <button (click)="save()">save</button>
+  <div *ngIf="power">
+ <h3>Powers of {{hero.name}}:</h3>
+<ul class="heroes">
+  <li *ngFor="let power of power">
+    <span>
+      <span class="badge">{{power.id}}</span> {{power.name}}
+    </span>
+    <button class="delete" title="delete hero"
+      (click)="delete(power)">x</button>
+    </li>
+</ul>
+    </div>
+
+<h4>Add more power?:</h4>
+    
+    <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Select Powers
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <div *ngFor="let power of allpowers" >
+          <span class="dropdown-item" (click)= "addPowertoHero(power)">{{power.name}}</span>
+            </div>
+        </div>
+      </div>  
+  
+  <button class='buttonClass' (click)="goBack()">go back</button>
+  <button class='buttonClass' (click)="save()">save</button>
+  
 </div>

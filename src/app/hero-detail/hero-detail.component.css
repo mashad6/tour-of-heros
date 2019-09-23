@@ -11,7 +11,7 @@ label {
     font-size: 1em;
     padding-left: .4em;
   }
-  button {
+  .buttonClass {
     margin-top: 20px;
     font-family: Arial;
     background-color: #eee;

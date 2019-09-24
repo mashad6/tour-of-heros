@@ -52,7 +52,7 @@ export class HeroService {
       catchError(this.handleError<Hero>(`getHero id=${id}`))
     );
   }
-  
+   
 /** GET power by id. Will 404 if id not found */
  getPower(id: number): Observable<Power> {
   const url = `http://localhost:4000/hero/power/${id}`;
@@ -71,9 +71,7 @@ addPowerToHero(ob:Heropower): Observable<Power> {
     return this.http.post<any>(url,{hid,pid},this.httpOptions).pipe(
       tap(_ => this.log(`added power to hero id=${hid}`)),
       catchError(this.handleError<any>(`addPowerToHero id=${hid}`))
-    );
-
-  
+    );  
 }
 ///add power
      

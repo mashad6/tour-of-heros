@@ -6,6 +6,9 @@ import { Hero }         from '../hero';
 import { HeroService }  from '../hero.service';
 import {PowerService} from '../power.service';
 import {Heropower} from '../heropower';
+import {Costume} from '../costume';
+import {CustomeService} from '../custome.service';
+import { from } from 'rxjs';
 @Component({
   selector: 'app-hero-detail',
   templateUrl: './hero-detail.component.html',
@@ -14,11 +17,14 @@ import {Heropower} from '../heropower';
 export class HeroDetailComponent implements OnInit {
   hero: Hero;
   power: Power
+  costume: Costume
   allpowers: Power[]
+  allcostumes: Costume[]
   constructor(
     private route: ActivatedRoute,
     private heroService: HeroService,
     private powerService: PowerService,
+    private costService: CustomeService,
     private location: Location
   ) {}
 
@@ -26,6 +32,8 @@ export class HeroDetailComponent implements OnInit {
     this.getHero();
     this.getAllpowers();
     this.getPower();
+    this.getCostume();
+    this.getAllcostumes();
   }
 
   save(): void {
@@ -54,10 +62,28 @@ export class HeroDetailComponent implements OnInit {
   }
 
 
+  getCostume(): void {
+    const id = +this.route.snapshot.paramMap.get('id');
+    this.costService.getCostume(id)
+      .subscribe(costume => {
+        this.costume = costume
+        console.log(this.costume)
+      });
+      
+  }
+
+
   getAllpowers(): void {
     this.powerService.getHeroes()
     .subscribe(allpowers => this.allpowers = allpowers);
   }
+
+
+  getAllcostumes(): void {
+    this.costService.getCostumes()
+    .subscribe(allcostumes => this.allcostumes = allcostumes);
+  }
+
 
   goBack(): void {
     this.location.back();
@@ -65,7 +91,6 @@ export class HeroDetailComponent implements OnInit {
 
   addPowertoHero(power:Power):void {
     
-//    const id = +this.route.snapshot.paramMap.get('id');
     let ob:Heropower ={
      pid: power.id,
      hid:this.hero.id
@@ -80,6 +105,23 @@ export class HeroDetailComponent implements OnInit {
         
   }
 
+addCostumetoHero(costume:Costume):void {
+
+    let ob:Heropower ={
+          pid: costume.id,//cid
+          hid: this.hero.id
+          
+        } 
+        console.log("cost id is ",ob.pid,"hero id is",ob.hid);
+        this.costService.addCostumeToHero(ob)
+        .subscribe( costume => {
+          this.getCostume();
+         });
+            
+      }
+
+
+
 
 delete(power: Power): void {
   let obj : Heropower={
@@ -91,8 +133,18 @@ delete(power: Power): void {
       .subscribe(power =>{
         this.getPower();
       });
- // this.hero = this.hero.filter(h => h !== hero);
-  //this.heroService.deleteHero(hero).subscribe();
 }
+
+deleteCost(costume:Costume):void{
+  let ob : Heropower={
+    pid: costume.id,//cid
+    hid:this.hero.id
+  }
+      console.log("hero id to del is:",ob.hid,"costume id is ",ob.pid);
+      this.costService.deleteCost(ob)
+      .subscribe(costume =>{
+        this.getCostume();
+      });
+    }
 
 } 

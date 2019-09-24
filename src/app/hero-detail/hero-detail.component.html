@@ -32,6 +32,33 @@
         </div>
       </div>  
   
+      <div *ngIf="costume">
+        <h3>Costume of {{hero.name}}:</h3>
+       <ul class="heroes">
+         <li *ngFor="let costume of costume">
+           <span>
+             <span class="badge">{{costume.id}}</span> {{costume.name}}
+           </span>
+           <button class="delete" title="delete cost"
+             (click)="deleteCost(costume)">x</button>
+           </li>
+       </ul>
+           </div>
+ 
+<h4>Change costume?:</h4>
+    
+<div class="dropdown">
+    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Select Costume
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+      <div *ngFor="let costume of allcostumes" >
+      <span class="dropdown-item" (click)= "addCostumetoHero(costume)">{{costume.name}}</span>
+        </div>
+    </div>
+  </div>        
+
+
   <button class='buttonClass' (click)="goBack()">go back</button>
   <button class='buttonClass' (click)="save()">save</button>
   

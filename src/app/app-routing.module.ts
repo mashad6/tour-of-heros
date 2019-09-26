@@ -6,6 +6,7 @@ import { HeroesComponent }      from './heroes/heroes.component';
 import { HeroDetailComponent }  from './hero-detail/hero-detail.component';
 import {PowerDetailsComponent} from './power-details/power-details.component';
 import {CostumeComponent} from './costume/costume.component';
+import {CityComponent} from './city/city.component';
  const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
   { path: 'dashboard', component: DashboardComponent },
@@ -14,8 +15,7 @@ import {CostumeComponent} from './costume/costume.component';
   { path: 'power', component: PowerComponent },
   { path: 'powerdetails/:id', component: PowerDetailsComponent },
   { path: 'costume', component: CostumeComponent },
-
-
+  { path: 'city', component: CityComponent },
   
   
 ];

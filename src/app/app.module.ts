@@ -14,6 +14,7 @@ import { MessagesComponent }    from './messages/messages.component';
 import { PowerComponent } from './power/power.component';
 import { PowerDetailsComponent } from './power-details/power-details.component';
 import { CostumeComponent } from './costume/costume.component';
+import { CityComponent } from './city/city.component';
 
 @NgModule({
   imports: [
@@ -33,7 +34,8 @@ import { CostumeComponent } from './costume/costume.component';
     HeroSearchComponent,
     PowerComponent,
     PowerDetailsComponent,
-    CostumeComponent
+    CostumeComponent,
+    CityComponent
   ],
   bootstrap: [ AppComponent ]
 })

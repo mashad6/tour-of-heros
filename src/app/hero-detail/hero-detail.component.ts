@@ -8,6 +8,8 @@ import {PowerService} from '../power.service';
 import {Heropower} from '../heropower';
 import {Costume} from '../costume';
 import {CustomeService} from '../custome.service';
+import {City} from '../city';
+import {CityService} from '../city.service';
 import { from } from 'rxjs';
 @Component({
   selector: 'app-hero-detail',
@@ -16,24 +18,27 @@ import { from } from 'rxjs';
 })
 export class HeroDetailComponent implements OnInit {
   hero: Hero;
-  power: Power
-  costume: Costume
+  power: Power[]=[]
+  costume: Costume[]=[]
+  city : City
   allpowers: Power[]
   allcostumes: Costume[]
+  allcities: City[]
   constructor(
     private route: ActivatedRoute,
     private heroService: HeroService,
     private powerService: PowerService,
     private costService: CustomeService,
+    private cityService: CityService,
     private location: Location
   ) {}
 
   ngOnInit(): void {
     this.getHero();
     this.getAllpowers();
-    this.getPower();
-    this.getCostume();
+    this.getCity();
     this.getAllcostumes();
+    this.getAllcities();
   }
 
   save(): void {
@@ -47,6 +52,9 @@ export class HeroDetailComponent implements OnInit {
       .subscribe(hero => {
         this.hero = hero[0]
         console.log(hero)
+        this.getPower();
+        this.getCostume();
+
       });
       
   }
@@ -57,6 +65,7 @@ export class HeroDetailComponent implements OnInit {
       .subscribe(power => {
         this.power = power
         console.log(this.power)
+        this.getAllpowers();
       });
       
   }
@@ -68,20 +77,49 @@ export class HeroDetailComponent implements OnInit {
       .subscribe(costume => {
         this.costume = costume
         console.log(this.costume)
+        this.getAllcostumes();
       });
       
+  }
+
+  getCity(){
+    const id = +this.route.snapshot.paramMap.get('id');
+    this.cityService.getCity(id)
+    .subscribe(city=>{
+      this.city=city
+      console.log(this.city)
+    })
   }
 
 
   getAllpowers(): void {
     this.powerService.getHeroes()
-    .subscribe(allpowers => this.allpowers = allpowers);
+    .subscribe(allpowers =>{ 
+      this.allpowers = allpowers;
+      this.power.map(p=>{
+        this.allpowers=this.allpowers.filter(powerObj=>{
+          return p.id!==powerObj.id
+        })
+      })
+    }
+      );
   }
 
+  getAllcities(){
+    this.cityService.getCities()
+    .subscribe(allcities=>this.allcities=allcities)
+  }
 
   getAllcostumes(): void {
     this.costService.getCostumes()
-    .subscribe(allcostumes => this.allcostumes = allcostumes);
+    .subscribe(allcostumes => {
+      this.allcostumes = allcostumes;
+        this.costume.map(p=>{
+          this.allcostumes=this.allcostumes.filter(costObj=>{
+            return p.id!==costObj.id;
+          })
+        })
+      });
   }
 
 
@@ -120,7 +158,21 @@ addCostumetoHero(costume:Costume):void {
             
       }
 
+addCitytoHero(city:City):void {
 
+        let ob:Heropower ={
+              pid: city.id,//cid
+              hid: this.hero.id
+              
+            } 
+            console.log("cost id is ",ob.pid,"hero id is",ob.hid);
+             this.cityService.addCityToHero(ob)
+             .subscribe( city => {
+              this.getCity();
+            });
+                
+          }
+    
 
 
 delete(power: Power): void {
@@ -145,6 +197,19 @@ deleteCost(costume:Costume):void{
       .subscribe(costume =>{
         this.getCostume();
       });
+    }
+
+    deleteCity(city:City):void{
+      let ob:Heropower={
+        pid: city.id,
+        hid: this.hero.id
+      }
+      console.log("h is",ob.hid,"city is",ob.pid);
+      this.cityService.deleteCity(ob)
+      .subscribe(city=>{
+        this.getCity();
+      })
+    
     }
 
 } 

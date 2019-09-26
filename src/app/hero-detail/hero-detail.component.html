@@ -58,6 +58,32 @@
     </div>
   </div>        
 
+  <div *ngIf="city">
+    <h3>City of {{city.name}}:</h3>
+   <ul class="heroes">
+     <li *ngFor="let city of city">
+       <span>
+         <span class="badge">{{city.id}}</span> {{city.name}}
+       </span>
+       <button class="delete" title="delete city?"
+         (click)="deleteCity(city)">x</button > 
+       </li>
+   </ul>
+       </div>
+
+       <h4>Change city?:</h4>
+    
+       <div class="dropdown">
+           <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+             Select city
+           </button>
+           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+             <div *ngFor="let city of allcities" >
+             <span class="dropdown-item" (click)= "addCitytoHero(city)" >{{city.name}}</span>
+               </div>
+           </div>
+         </div>        
+       
 
   <button class='buttonClass' (click)="goBack()">go back</button>
   <button class='buttonClass' (click)="save()">save</button>
